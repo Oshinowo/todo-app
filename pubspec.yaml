@@ -9,13 +9,14 @@ version: 1.0.0+2
 environment:
   sdk: ">=2.17.6 <3.0.0"
 
-
 dependencies:
   flutter:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
   rename: ^2.0.1
+  equatable: ^2.0.3
+  flutter_bloc: ^8.0.1
 
 dev_dependencies:
   flutter_test:
