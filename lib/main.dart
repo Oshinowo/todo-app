@@ -31,6 +31,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _code = TextEditingController();
+  String ussdResponseMsg = '';
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +62,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   'Send',
                 ),
               ),
+              const SizedBox(
+                height: 50,
+              ),
+              Text(
+                'result: $ussdResponseMsg',
+              ),
             ],
           ),
         ),
@@ -84,6 +91,9 @@ class _HomeScreenState extends State<HomeScreen> {
         const Duration(
             seconds: 10), // timeout (optional) - default is 10 seconds
       );
+      setState(() {
+        ussdResponseMsg = ussdResponseMessage;
+      });
       print("succes! message: $ussdResponseMessage");
     } catch (e) {
       debugPrint("error! code: $e - message: $e");
