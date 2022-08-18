@@ -53,6 +53,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () async {
                   if (await Permission.contacts.request().isGranted) {
                     makeMyRequest();
+                  } else {
+                    print('no');
                   }
                 },
                 child: const Text(
