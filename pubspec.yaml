@@ -18,6 +18,8 @@ dependencies:
   rename: ^2.0.1
   flutter_bloc: ^8.1.1
   equatable: ^2.0.3
+  ussd_service: ^0.1.1
+  permission_handler: ^10.0.0
 
 dev_dependencies:
   flutter_test:
