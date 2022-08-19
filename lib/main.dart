@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   makeMyRequest() async {
-    int subscriptionId = sim as int; // sim card subscription ID
+    int subscriptionId = 1; // sim card subscription ID
     final coded = _code.text; // ussd code payload
     try {
       String ussdResponseMessage = await UssdService.makeRequest(
