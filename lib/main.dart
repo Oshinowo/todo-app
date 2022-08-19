@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sim_data/sim_data.dart';
 import 'package:ussd_service/ussd_service.dart';
 
 void main() {
@@ -32,6 +34,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _code = TextEditingController();
   String ussdResponseMsg = '';
+  String sim = '';
+  String error = '';
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +59,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   if (await Permission.contacts.request().isGranted) {
                     makeMyRequest();
                   } else {
-                    print('no');
+                    setState(() {
+                      ussdResponseMsg = 'no';
+                    });
+                    // print('no');
                   }
                 },
                 child: const Text(
@@ -68,12 +75,24 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 'result: $ussdResponseMsg',
               ),
+              const SizedBox(
+                height: 50,
+              ),
+              Text(
+                'sim number: $sim',
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              Text(
+                'error: $error',
+              ),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: printSimCardsData,
         child: const Icon(
           Icons.add,
         ),
@@ -81,8 +100,25 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void printSimCardsData() async {
+    try {
+      SimData simData = await SimDataPlugin.getSimData();
+      for (var s in simData.cards) {
+        print('Serial number: ${s.serialNumber}');
+        setState(() {
+          sim = s.serialNumber;
+        });
+      }
+    } on PlatformException catch (e) {
+      setState(() {
+        error = e.message!;
+      });
+      debugPrint("error! code: ${e.code} - message: ${e.message}");
+    }
+  }
+
   makeMyRequest() async {
-    int subscriptionId = 1; // sim card subscription ID
+    int subscriptionId = sim as int; // sim card subscription ID
     final coded = _code.text; // ussd code payload
     try {
       String ussdResponseMessage = await UssdService.makeRequest(
@@ -96,6 +132,9 @@ class _HomeScreenState extends State<HomeScreen> {
       });
       print("succes! message: $ussdResponseMessage");
     } catch (e) {
+      setState(() {
+        error = e.toString();
+      });
       debugPrint("error! code: $e - message: $e");
     }
   }
