@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     makeMyRequest();
                   } else {
                     setState(() {
-                      ussdResponseMsg = 'no';
+                      error = 'no';
                     });
                     // print('no');
                   }
@@ -92,7 +92,15 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: printSimCardsData,
+        onPressed: () async {
+          if (await Permission.contacts.request().isGranted) {
+            printSimCardsData();
+          } else {
+            setState(() {
+              error = 'no';
+            });
+          }
+        },
         child: const Icon(
           Icons.add,
         ),
@@ -121,12 +129,8 @@ class _HomeScreenState extends State<HomeScreen> {
     int subscriptionId = 1; // sim card subscription ID
     final coded = _code.text; // ussd code payload
     try {
-      String ussdResponseMessage = await UssdService.makeRequest(
-        subscriptionId,
-        coded,
-        const Duration(
-            seconds: 10), // timeout (optional) - default is 10 seconds
-      );
+      String ussdResponseMessage =
+          await UssdService.makeRequest(subscriptionId, coded);
       setState(() {
         ussdResponseMsg = ussdResponseMessage;
       });
