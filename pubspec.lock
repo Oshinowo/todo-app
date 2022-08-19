@@ -207,13 +207,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  sim_data:
-    dependency: "direct main"
-    description:
-      name: sim_data
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.2"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -261,13 +254,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.9"
-  ussd_service:
+  ussd_advanced:
     dependency: "direct main"
     description:
-      name: ussd_service
+      name: ussd_advanced
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.1"
+    version: "1.0.0"
   vector_math:
     dependency: transitive
     description:
