@@ -15,8 +15,8 @@ dependencies:
 
   cupertino_icons: ^1.0.2
   rename: ^2.0.1
-  equatable: ^2.0.3
-  flutter_bloc: ^8.0.1
+  equatable: ^2.0.5
+  flutter_bloc: ^8.1.1
 
 dev_dependencies:
   flutter_test:
