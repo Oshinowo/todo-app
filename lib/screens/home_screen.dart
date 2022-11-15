@@ -1,4 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/blocs/theme/theme_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,8 +18,15 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Code is Magic'),
       ),
-      body: const Center(
-        child: Text('data'),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            int radInt = Random().nextInt(10);
+            print(radInt);
+            context.read<ThemeBloc>().add(ChangeThemeEvent(radInt));
+          },
+          child: const Text('Change App Theme'),
+        ),
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
