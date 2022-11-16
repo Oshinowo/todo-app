@@ -1,4 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/cubits/theme/theme_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,8 +18,14 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Code is Magic'),
       ),
-      body: const Center(
-        child: Text('data'),
+      body: Center(
+        child: ElevatedButton(
+            onPressed: () {
+              int radInt = Random().nextInt(10);
+              print(radInt);
+              context.read<ThemeCubit>().onChangeAppState(radInt);
+            },
+            child: const Text('Change App theme')),
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
