@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_app/cubits/color/color_cubit.dart';
+import 'package:todo_app/cubits/counter/counter_cubit.dart';
 import 'package:todo_app/screens/home_screen.dart';
 
 void main() {
-  runApp(const TodoApp());
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider<ColorCubit>(
+        create: (context) => ColorCubit(),
+      ),
+      BlocProvider(
+        create: (context) =>
+            CounterCubit(colorCubit: context.read<ColorCubit>()),
+      ),
+    ],
+    child: const TodoApp(),
+  ));
 }
 
 class TodoApp extends StatelessWidget {
