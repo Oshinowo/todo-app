@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:todo_app/blocs/counter/counter_bloc.dart';
 import 'package:todo_app/screens/home_screen.dart';
 
-void main() {
-  runApp(const TodoApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory: await getApplicationDocumentsDirectory(),
+  );
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<CounterBloc>(
+          create: (context) => CounterBloc(),
+        ),
+      ],
+      child: const TodoApp(),
+    ),
+  );
 }
 
 class TodoApp extends StatelessWidget {

@@ -18,8 +18,8 @@ dependencies:
   rename: ^2.0.1
   flutter_bloc: ^8.1.1
   equatable: ^2.0.3
-  permission_handler: ^10.0.0
-  ussd_advanced: ^1.0.0
+  hydrated_bloc: ^9.0.0
+  path_provider: ^2.0.11
 
 
 dev_dependencies:
