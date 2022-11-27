@@ -7,18 +7,27 @@ import 'package:todo_app/screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  HydratedBloc.storage = await HydratedStorage.build(
+  //THIS IS USED FROM HYDRATED_BLOV VERSION-9 (INSTEAD OF USING RUNZONED)
+  // HydratedBloc.storage = await HydratedStorage.build(
+  //   storageDirectory: await getApplicationDocumentsDirectory(),
+  // );
+
+  //THIS IS USED FROM HYDRATED_BLOC VERSION-8
+  final storage = await HydratedStorage.build(
     storageDirectory: await getApplicationDocumentsDirectory(),
   );
-  runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider<CounterBloc>(
-          create: (context) => CounterBloc(),
-        ),
-      ],
-      child: const TodoApp(),
+  HydratedBlocOverrides.runZoned(
+    () => runApp(
+      MultiBlocProvider(
+        providers: [
+          BlocProvider<CounterBloc>(
+            create: (context) => CounterBloc(),
+          ),
+        ],
+        child: const TodoApp(),
+      ),
     ),
+    storage: storage,
   );
 }
 
