@@ -17,9 +17,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   rename: ^2.0.1
   flutter_bloc: ^8.1.1
-  equatable: ^2.0.3
-  permission_handler: ^10.0.0
-  ussd_advanced: ^1.0.0
+  equatable: ^2.0.5
+  uuid: ^3.0.7
 
 
 dev_dependencies:

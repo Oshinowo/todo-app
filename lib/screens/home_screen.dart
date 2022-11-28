@@ -15,28 +15,9 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Code is Magic'),
       ),
       body: const Center(
-        child: Text('data'),
+        child: Text('Todo'),
       ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: () async {},
-            child: const Icon(
-              Icons.remove,
-            ),
-          ),
-          const SizedBox(
-            width: 20,
-          ),
-          FloatingActionButton(
-            onPressed: () async {},
-            child: const Icon(
-              Icons.add,
-            ),
-          )
-        ],
-      ),
+
     );
   }
 }
