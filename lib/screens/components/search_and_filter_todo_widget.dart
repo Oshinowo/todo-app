@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_app/cubits/cubits.dart';
 import 'package:todo_app/models/todo.dart';
+import 'package:todo_app/utils/debounce.dart';
 
 class SearchAndFilterTodo extends StatefulWidget {
   const SearchAndFilterTodo({super.key});
@@ -12,6 +13,7 @@ class SearchAndFilterTodo extends StatefulWidget {
 
 class _SearchAndFilterTodoState extends State<SearchAndFilterTodo> {
   final _searchController = TextEditingController();
+  final debounce = Debounce(milliseconds: 1000);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,9 @@ class _SearchAndFilterTodoState extends State<SearchAndFilterTodo> {
           ),
           onChanged: (newSearchTerm) {
             if (newSearchTerm != '') {
-              context.read<TodoSearchCubit>().setSearchTerm(newSearchTerm);
+              debounce.run(() {
+                context.read<TodoSearchCubit>().setSearchTerm(newSearchTerm);
+              });
             }
           },
         ),
