@@ -8,48 +8,77 @@ class ShowTodo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final todos = context.watch<FilteredTodoCubit>().state.filteredTodos;
-    return ListView.separated(
-      primary: false,
-      shrinkWrap: true,
-      itemBuilder: (context, index) => Dismissible(
-        key: ValueKey(todos[index].id),
-        background: const ShowBackground(
-          direction: 0,
+    final filteredTodos =
+        context.watch<FilteredTodoCubit>().state.filteredTodos;
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<TodoListCubit, TodoListState>(
+          listener: (context, state) {
+            context.read<FilteredTodoCubit>().setFilteredTodos(
+                context.read<TodoFilterCubit>().state.filter,
+                state.todos,
+                context.read<TodoSearchCubit>().state.searchTerm);
+          },
         ),
-        secondaryBackground: const ShowBackground(
-          direction: 1,
+        BlocListener<TodoFilterCubit, TodoFilterState>(
+          listener: (context, state) {
+            context.read<FilteredTodoCubit>().setFilteredTodos(
+                state.filter,
+                context.read<TodoListCubit>().state.todos,
+                context.read<TodoSearchCubit>().state.searchTerm);
+          },
         ),
-        onDismissed: (_) {
-          context.read<TodoListCubit>().removeTodo(todos[index]);
-        },
-        confirmDismiss: (_) {
-          return showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                    title: const Text('Are you sure?'),
-                    content: const Text(
-                      'Do you really want to delete?',
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: const Text('No'),
+        BlocListener<TodoSearchCubit, TodoSearchState>(
+          listener: (context, state) {
+            context.read<FilteredTodoCubit>().setFilteredTodos(
+                context.read<TodoFilterCubit>().state.filter,
+                context.read<TodoListCubit>().state.todos,
+                state.searchTerm);
+          },
+        )
+      ],
+      child: ListView.separated(
+        primary: false,
+        shrinkWrap: true,
+        itemBuilder: (context, index) => Dismissible(
+          key: ValueKey(filteredTodos[index].id),
+          background: const ShowBackground(
+            direction: 0,
+          ),
+          secondaryBackground: const ShowBackground(
+            direction: 1,
+          ),
+          onDismissed: (_) {
+            context.read<TodoListCubit>().removeTodo(filteredTodos[index]);
+          },
+          confirmDismiss: (_) {
+            return showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                      title: const Text('Are you sure?'),
+                      content: const Text(
+                        'Do you really want to delete?',
                       ),
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: const Text('Yes'),
-                      ),
-                    ],
-                  ));
-        },
-        child: TodoItem(todo: todos[index]),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text('No'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text('Yes'),
+                        ),
+                      ],
+                    ));
+          },
+          child: TodoItem(todo: filteredTodos[index]),
+        ),
+        separatorBuilder: (context, index) => const Divider(
+          height: 2,
+          color: Colors.grey,
+        ),
+        itemCount: filteredTodos.length,
       ),
-      separatorBuilder: (context, index) => const Divider(
-        height: 2,
-        color: Colors.grey,
-      ),
-      itemCount: todos.length,
     );
   }
 }
