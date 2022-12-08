@@ -14,24 +14,33 @@ class TodoHeader extends StatelessWidget {
           'TODO',
           style: TextStyle(fontSize: 40),
         ),
-        // BlocBuilder<ActiveTodoCountCubit, ActiveTodoCountState>(
-        //   builder: (context, state) {
-        //     return Text(
-        //       '${state.activeTodoCount} items',
-        //       style: const TextStyle(
-        //         fontSize: 20,
-        //         color: Colors.redAccent,
-        //       ),
-        //     );
-        //   },
-        // ),
-        Text(
-          '${context.watch<ActiveTodoCountCubit>().state.activeTodoCount} items',
-          style: const TextStyle(
-            fontSize: 20,
-            color: Colors.redAccent,
+        BlocListener<TodoListCubit, TodoListState>(
+          listener: (context, state) {
+            final activeTodoCount =
+                state.todos.where((todo) => !todo.completed).toList().length;
+            context
+                .read<ActiveTodoCountCubit>()
+                .calculateActiveTodoCount(activeTodoCount);
+          },
+          child: BlocBuilder<ActiveTodoCountCubit, ActiveTodoCountState>(
+            builder: (context, state) {
+              return Text(
+                '${state.activeTodoCount} items',
+                style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.redAccent,
+                ),
+              );
+            },
           ),
         ),
+        // Text(
+        //   '${context.watch<ActiveTodoCountCubit>().state.activeTodoCount} items',
+        //   style: const TextStyle(
+        //     fontSize: 20,
+        //     color: Colors.redAccent,
+        //   ),
+        // ),
       ],
     );
   }
