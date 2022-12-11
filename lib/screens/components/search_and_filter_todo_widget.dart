@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_app/cubits/cubits.dart';
+import 'package:todo_app/blocs/blocs.dart';
 import 'package:todo_app/models/todo.dart';
 import 'package:todo_app/utils/debounce.dart';
 
@@ -13,7 +13,7 @@ class SearchAndFilterTodo extends StatefulWidget {
 
 class _SearchAndFilterTodoState extends State<SearchAndFilterTodo> {
   final _searchController = TextEditingController();
-  final debounce = Debounce(milliseconds: 1000);
+  // final debounce = Debounce(milliseconds: 1000);
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +31,11 @@ class _SearchAndFilterTodoState extends State<SearchAndFilterTodo> {
           ),
           onChanged: (newSearchTerm) {
             if (newSearchTerm != '') {
-              debounce.run(() {
-                context.read<TodoSearchCubit>().setSearchTerm(newSearchTerm);
-              });
+              // debounce.run(() {
+                context
+                    .read<TodoSearchBloc>()
+                    .add(SetSearchTermEvent(searchTerm: newSearchTerm));
+              // });
             }
           },
         ),
@@ -55,7 +57,9 @@ class _SearchAndFilterTodoState extends State<SearchAndFilterTodo> {
   Widget filterButton(BuildContext context, Filter filter) {
     return TextButton(
       onPressed: () {
-        context.read<TodoFilterCubit>().changeFilter(filter);
+        context
+            .read<TodoFilterBloc>()
+            .add(ChangeFilterEvent(newFilter: filter));
       },
       child: Text(
         filter == Filter.all
@@ -65,7 +69,7 @@ class _SearchAndFilterTodoState extends State<SearchAndFilterTodo> {
                 : 'Completed',
         style: TextStyle(
           fontSize: 18.0,
-          color: context.watch<TodoFilterCubit>().state.filter == filter
+          color: context.watch<TodoFilterBloc>().state.filter == filter
               ? Colors.blue
               : Colors.grey,
         ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_app/cubits/cubits.dart';
+import 'package:todo_app/blocs/blocs.dart';
 import 'package:todo_app/screens/home_screen.dart';
 
 void main() {
@@ -8,27 +8,23 @@ void main() {
     MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => TodoFilterCubit(),
+          create: (context) => TodoFilterBloc(),
         ),
         BlocProvider(
-          create: (context) => TodoSearchCubit(),
+          create: (context) => TodoSearchBloc(),
         ),
         BlocProvider(
-          create: (context) => TodoListCubit(),
+          create: (context) => TodoListBloc(),
         ),
         BlocProvider(
-          create: (context) => ActiveTodoCountCubit(
+          create: (context) => ActiveTodoCountBloc(
             initialActiveTodoCount:
-                context.read<TodoListCubit>().state.todos.length,
-            todoListCubit: context.read<TodoListCubit>(),
+                context.read<TodoListBloc>().state.todos.length,
           ),
         ),
         BlocProvider(
-          create: (context) => FilteredTodoCubit(
-            initialTodos: context.read<TodoListCubit>().state.todos,
-            todoFilterCubit: context.read<TodoFilterCubit>(),
-            todoSearchCubit: context.read<TodoSearchCubit>(),
-            todoListCubit: context.read<TodoListCubit>(),
+          create: (context) => FilteredTodoBloc(
+            initialTodos: context.read<TodoListBloc>().state.todos,
           ),
         ),
       ],
