@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_app/cubits/cubits.dart';
+import 'package:todo_app/blocs/blocs.dart';
 import 'package:todo_app/models/todo.dart';
 
 class ShowTodo extends StatelessWidget {
@@ -8,7 +8,7 @@ class ShowTodo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final todos = context.watch<FilteredTodoCubit>().state.filteredTodos;
+    final todos = context.watch<FilteredTodoBloc>().state.filteredTodos;
     return ListView.separated(
       primary: false,
       shrinkWrap: true,
@@ -21,7 +21,7 @@ class ShowTodo extends StatelessWidget {
           direction: 1,
         ),
         onDismissed: (_) {
-          context.read<TodoListCubit>().removeTodo(todos[index]);
+          context.read<TodoListBloc>().add(RemoveTodoEvent(todo: todos[index]));
         },
         confirmDismiss: (_) {
           return showDialog(
@@ -128,10 +128,10 @@ class _TodoItemState extends State<TodoItem> {
                         error = _editTextController.text.isEmpty ? true : false;
                       });
                       if (!error) {
-                        context.read<TodoListCubit>().editTodos(
-                              widget.todo.id,
-                              _editTextController.text,
-                            );
+                        context.read<TodoListBloc>().add(EditTodoEvent(
+                              id: widget.todo.id,
+                              todoDesc: _editTextController.text,
+                            ));
                         Navigator.of(context).pop();
                       }
                     },
@@ -144,7 +144,9 @@ class _TodoItemState extends State<TodoItem> {
       leading: Checkbox(
           value: widget.todo.completed,
           onChanged: (isChecked) {
-            context.read<TodoListCubit>().toggleTodo(widget.todo.id);
+            context
+                .read<TodoListBloc>()
+                .add(ToggleTodoEvent(id: widget.todo.id));
           }),
       title: Text(
         widget.todo.desc,
