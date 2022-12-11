@@ -25,11 +25,21 @@ class TodoHeader extends StatelessWidget {
         //     );
         //   },
         // ),
-        Text(
-          '${context.watch<ActiveTodoCountBloc>().state.activeTodoCount} items',
-          style: const TextStyle(
-            fontSize: 20,
-            color: Colors.redAccent,
+        BlocListener<TodoListBloc, TodoListState>(
+          listener: (context, state) {
+            final int activeTodoCount =
+                state.todos.where((todo) => !todo.completed).toList().length;
+
+            context.read<ActiveTodoCountBloc>().add(
+                CalculateActiveTodoCountEvent(
+                    activeTodoCount: activeTodoCount));
+          },
+          child: Text(
+            '${context.watch<ActiveTodoCountBloc>().state.activeTodoCount} items',
+            style: const TextStyle(
+              fontSize: 20,
+              color: Colors.redAccent,
+            ),
           ),
         ),
       ],

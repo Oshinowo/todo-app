@@ -9,48 +9,112 @@ class ShowTodo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final todos = context.watch<FilteredTodoBloc>().state.filteredTodos;
-    return ListView.separated(
-      primary: false,
-      shrinkWrap: true,
-      itemBuilder: (context, index) => Dismissible(
-        key: ValueKey(todos[index].id),
-        background: const ShowBackground(
-          direction: 0,
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<TodoListBloc, TodoListState>(
+          listener: (context, state) {
+            final filteredTodos = setFilteredTodos(
+                context.read<TodoFilterBloc>().state.filter,
+                state.todos,
+                context.read<TodoSearchBloc>().state.searchTerm);
+            context
+                .read<FilteredTodoBloc>()
+                .add(CalculateFilteredTodoEvent(filteredTodos: filteredTodos));
+          },
         ),
-        secondaryBackground: const ShowBackground(
-          direction: 1,
+        BlocListener<TodoFilterBloc, TodoFilterState>(
+          listener: (context, state) {
+            final filteredTodos = setFilteredTodos(
+                state.filter,
+                context.read<TodoListBloc>().state.todos,
+                context.read<TodoSearchBloc>().state.searchTerm);
+            context
+                .read<FilteredTodoBloc>()
+                .add(CalculateFilteredTodoEvent(filteredTodos: filteredTodos));
+          },
         ),
-        onDismissed: (_) {
-          context.read<TodoListBloc>().add(RemoveTodoEvent(todo: todos[index]));
-        },
-        confirmDismiss: (_) {
-          return showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                    title: const Text('Are you sure?'),
-                    content: const Text(
-                      'Do you really want to delete?',
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: const Text('No'),
+        BlocListener<TodoSearchBloc, TodoSearchState>(
+          listener: (context, state) {
+            final filteredTodos = setFilteredTodos(
+                context.read<TodoFilterBloc>().state.filter,
+                context.read<TodoListBloc>().state.todos,
+                state.searchTerm);
+            context
+                .read<FilteredTodoBloc>()
+                .add(CalculateFilteredTodoEvent(filteredTodos: filteredTodos));
+          },
+        ),
+      ],
+      child: ListView.separated(
+        primary: false,
+        shrinkWrap: true,
+        itemBuilder: (context, index) => Dismissible(
+          key: ValueKey(todos[index].id),
+          background: const ShowBackground(
+            direction: 0,
+          ),
+          secondaryBackground: const ShowBackground(
+            direction: 1,
+          ),
+          onDismissed: (_) {
+            context
+                .read<TodoListBloc>()
+                .add(RemoveTodoEvent(todo: todos[index]));
+          },
+          confirmDismiss: (_) {
+            return showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                      title: const Text('Are you sure?'),
+                      content: const Text(
+                        'Do you really want to delete?',
                       ),
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: const Text('Yes'),
-                      ),
-                    ],
-                  ));
-        },
-        child: TodoItem(todo: todos[index]),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text('No'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text('Yes'),
+                        ),
+                      ],
+                    ));
+          },
+          child: TodoItem(todo: todos[index]),
+        ),
+        separatorBuilder: (context, index) => const Divider(
+          height: 2,
+          color: Colors.grey,
+        ),
+        itemCount: todos.length,
       ),
-      separatorBuilder: (context, index) => const Divider(
-        height: 2,
-        color: Colors.grey,
-      ),
-      itemCount: todos.length,
     );
+  }
+
+  List<Todo> setFilteredTodos(
+      Filter filter, List<Todo> todos, String searchTerm) {
+    List<Todo> filteredTodos;
+
+    switch (filter) {
+      case Filter.active:
+        filteredTodos = todos.where((Todo todo) => !todo.completed).toList();
+        break;
+      case Filter.completed:
+        filteredTodos = todos.where((Todo todo) => todo.completed).toList();
+        break;
+      case Filter.all:
+      default:
+        filteredTodos = todos;
+        break;
+    }
+
+    if (searchTerm.isNotEmpty) {
+      filteredTodos = filteredTodos
+          .where((Todo todo) => todo.desc.toLowerCase().contains(searchTerm))
+          .toList();
+    }
+    return filteredTodos;
   }
 }
 

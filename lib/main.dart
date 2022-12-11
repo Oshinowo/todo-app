@@ -20,15 +20,11 @@ void main() {
           create: (context) => ActiveTodoCountBloc(
             initialActiveTodoCount:
                 context.read<TodoListBloc>().state.todos.length,
-            todoListBloc: context.read<TodoListBloc>(),
           ),
         ),
         BlocProvider(
           create: (context) => FilteredTodoBloc(
             initialTodos: context.read<TodoListBloc>().state.todos,
-            todoFilterBloc: context.read<TodoFilterBloc>(),
-            todoSearchBloc: context.read<TodoSearchBloc>(),
-            todoListBloc: context.read<TodoListBloc>(),
           ),
         ),
       ],
