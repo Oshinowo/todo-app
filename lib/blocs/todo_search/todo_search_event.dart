@@ -11,7 +11,7 @@ abstract class TodoSearchEvent extends Equatable {
 class SetSearchTermEvent extends TodoSearchEvent {
   final String searchTerm;
 
-  SetSearchTermEvent({required this.searchTerm});
+  const SetSearchTermEvent({required this.searchTerm});
   
 
   @override
